@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <!-- Auto clear cache / Disable browser caching -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta name="description" content="Word Explorer: A fun HTML5 interactive game for kids to learn English verbs using AI-generated pictures and words.">
+  <title>Word Explorer: Action Verbs!</title>
+  <!-- Google Fonts for friendly rounded typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Background bubble decorations -->
+  <div class="bubble bubble-1"></div>
+  <div class="bubble bubble-2"></div>
+  <div class="bubble bubble-3"></div>
+
+  <div class="game-container">
+    <!-- Header Area -->
+    <header class="game-header">
+      <div class="header-left">
+        <h1 class="logo">🎨 Word Explorer</h1>
+      </div>
+      
+      <div class="header-right">
+        <!-- Score Board -->
+        <div class="score-board" id="scoreBoard">
+          <span class="star-icon">⭐</span>
+          <span class="score-value" id="scoreValue">0</span>
+        </div>
+        <!-- Sound Toggle -->
+        <button class="icon-btn" id="soundToggle" title="Toggle Sound" aria-label="Toggle Sound">
+          <svg id="soundOnIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+            <path d="M13.5 4.06c0-1.336-1.616-2.005-2.56-1.06l-4.5 4.5H4.508c-1.141 0-2.063.922-2.063 2.063v4.874c0 1.141.922 2.063 2.063 2.063h1.932l4.5 4.5c.944.945 2.56.276 2.56-1.06V4.06zM17.78 7.22a.75.75 0 00-1.06 1.06A7.472 7.472 0 0119 12c0 1.41-.388 2.73-1.06 3.86a.75.75 0 101.3 1.06A8.972 8.972 0 0020.5 12a8.972 8.972 0 00-2.72-4.78z" />
+            <path d="M15 9.78a.75.75 0 00-1.06 1.06A4.472 4.472 0 0114.5 12c0 .88-.25 1.7-.68 2.4a.75.75 0 101.3.75A5.972 5.972 0 0016 12a5.972 5.972 0 00-1-2.22z" />
+          </svg>
+          <svg id="soundOffIcon" class="hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+            <path d="M13.5 4.06c0-1.336-1.616-2.005-2.56-1.06l-4.5 4.5H4.508c-1.141 0-2.063.922-2.063 2.063v4.874c0 1.141.922 2.063 2.063 2.063h1.932l4.5 4.5c.944.945 2.56.276 2.56-1.06V4.06zM17.78 7.22a.75.75 0 111.06 1.06L16.06 11l2.78 2.78a.75.75 0 01-1.06 1.06L15 12.06l-2.78 2.78a.75.75 0 01-1.06-1.06L13.94 11l-2.78-2.78a.75.75 0 011.06-1.06L15 9.94l2.78-2.72z" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Progress Indicator Bar -->
+    <div class="progress-container">
+      <div class="progress-bar-wrapper">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <div class="level-indicator" id="levelIndicator">Level 1 of 10</div>
+    </div>
+
+    <!-- Main Workspace -->
+    <main class="game-main">
+      <!-- Left Panel: Picture Card -->
+      <section class="pic-panel">
+        <div class="image-frame-container">
+          <img id="verbImage" src="assets/throw_ball.png" alt="Action illustration" class="verb-image" draggable="false">
+          <!-- Text to speech overlay button -->
+          <button class="speak-btn-overlay" id="speakPhraseBtn" title="Hear phrase" aria-label="Read complete phrase aloud">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="28" height="28">
+              <path d="M13.5 4.06c0-1.336-1.616-2.005-2.56-1.06l-4.5 4.5H4.508c-1.141 0-2.063.922-2.063 2.063v4.874c0 1.141.922 2.063 2.063 2.063h1.932l4.5 4.5c.944.945 2.56.276 2.56-1.06V4.06zM18.57 17.47a.75.75 0 11-1.06-1.06 5.972 5.972 0 000-8.42.75.75 0 111.06-1.06 7.472 7.472 0 010 10.54z" />
+              <path d="M16.44 14.34a.75.75 0 11-1.06-1.06 2.972 2.972 0 000-4.22.75.75 0 111.06-1.06 4.472 4.472 0 010 6.34z" />
+            </svg>
+            <span>Hear it!</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Right Panel: Game Interaction -->
+      <section class="play-panel">
+        <!-- Target slots tray -->
+        <div class="slots-tray-container">
+          <h2 class="section-title">Put the words in order:</h2>
+          <div class="slots-tray" id="slotsTray">
+            <!-- Dynamically populated slots will go here -->
+          </div>
+        </div>
+
+        <!-- Choice deck for scrambled word cards -->
+        <div class="deck-container">
+          <div class="deck" id="wordDeck">
+            <!-- Dynamically populated cards will go here -->
+          </div>
+        </div>
+
+        <!-- Control Action Row -->
+        <div class="action-row">
+          <div class="message-banner hidden" id="messageBanner">
+            <span class="message-text" id="messageText">Great job! 🎉</span>
+          </div>
+          <button class="action-btn hidden" id="nextLevelBtn">Next Level ➔</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Victory Overlay Modal -->
+  <div class="modal-overlay hidden" id="victoryModal">
+    <div class="modal-content">
+      <div class="trophy-bounce">🏆</div>
+      <h2 class="modal-title">Super Word Explorer!</h2>
+      <p class="modal-subtitle">You completed all 10 action verbs! You are amazing! 🌟</p>
+      
+      <div class="stars-summary">
+        <span class="star-spin">⭐</span>
+        <span class="star-spin">⭐</span>
+        <span class="star-spin">⭐</span>
+      </div>
+
+      <button class="action-btn reset-btn" id="playAgainBtn">Play Again 🔁</button>
+    </div>
+  </div>
+
+  <!-- Canvas for Confetti -->
+  <canvas id="confettiCanvas" class="confetti-canvas"></canvas>
+
+  <script src="app.js"></script>
+</body>
+</html>

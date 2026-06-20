@@ -1,0 +1,4 @@
+.agents/
+*.log
+.system_generated/
+/scratch/
