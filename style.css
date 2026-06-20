@@ -21,6 +21,16 @@
   --border-radius-sm: 12px;
 }
 
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+button {
+  font-family: inherit;
+  font-size: inherit;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -603,13 +613,13 @@ body {
   }
   
   .word-card {
-    font-size: 26px;
+    font-size: 30px;
     padding: 10px 20px;
   }
   
   .slot-placeholder {
-    height: 64px;
-    font-size: 26px;
+    height: 72px;
+    font-size: 30px;
   }
 }
 
@@ -629,13 +639,13 @@ body {
   }
   
   .word-card {
-    font-size: 24px;
+    font-size: 30px;
     padding: 8px 16px;
   }
   
   .slot-placeholder {
-    height: 60px;
-    font-size: 24px;
+    height: 72px;
+    font-size: 30px;
   }
   
   .action-btn {
