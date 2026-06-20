@@ -21,7 +21,25 @@
   <div class="bubble bubble-2"></div>
   <div class="bubble bubble-3"></div>
 
-  <div class="game-container">
+  <!-- Start Screen Overlay -->
+  <div class="start-screen" id="startScreen">
+    <div class="start-content">
+      <div class="start-logo">🎨🪁🚲📖</div>
+      <h1 class="start-title">Word Explorer</h1>
+      <p class="start-subtitle">Choose an action to start learning! 🔊🌟</p>
+      
+      <!-- Puzzle / Level Selection Grid -->
+      <div class="level-grid" id="levelGrid">
+        <!-- Will be populated dynamically by app.js -->
+      </div>
+      
+      <div class="start-footer">
+        <span class="version-tag">v1.2.0</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="game-container hidden" id="gameContainer">
     <!-- Header Area -->
     <header class="game-header">
       <div class="header-left">
@@ -34,6 +52,12 @@
           <span class="star-icon">⭐</span>
           <span class="score-value" id="scoreValue">0</span>
         </div>
+        <!-- Menu Button -->
+        <button class="icon-btn" id="menuBtn" title="Back to Menu" aria-label="Back to Menu">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+            <path fill-rule="evenodd" d="M3 6.75A.75.75 0 013.75 6h16.5a.75.75 0 010 1.5H3.75A.75.75 0 013 6.75zM3 12a.75.75 0 01.75-.75h16.5a.75.75 0 010 1.5H3.75A.75.75 0 013 12zm0 5.25a.75.75 0 01.75-.75h16.5a.75.75 0 010 1.5H3.75a.75.75 0 01-.75-.75z" clip-rule="evenodd" />
+          </svg>
+        </button>
         <!-- Sound Toggle -->
         <button class="icon-btn" id="soundToggle" title="Toggle Sound" aria-label="Toggle Sound">
           <svg id="soundOnIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
@@ -114,6 +138,7 @@
       </div>
 
       <button class="action-btn reset-btn" id="playAgainBtn">Play Again 🔁</button>
+      <button class="action-btn reset-btn" id="victoryMenuBtn" style="margin-top: 12px; background: linear-gradient(135deg, #7e57c2 0%, #5e35b1 100%); box-shadow: 0 6px 12px rgba(94, 53, 177, 0.3), inset 0 -4px 0 rgba(0, 0, 0, 0.2);">Main Menu 🏠</button>
     </div>
   </div>
 

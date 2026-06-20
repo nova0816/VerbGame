@@ -6,61 +6,71 @@ const levels = [
     statement: "throw a ball",
     words: ["throw", "a", "ball"],
     distractors: ["catch", "they"],
-    image: "assets/throw_ball.png"
+    image: "assets/throw_ball.png",
+    emoji: "⚽"
   },
   {
     statement: "ride a bicycle",
     words: ["ride", "a", "bicycle"],
     distractors: ["drive", "he"],
-    image: "assets/ride_bicycle.png"
+    image: "assets/ride_bicycle.png",
+    emoji: "🚲"
   },
   {
     statement: "read a book",
     words: ["read", "a", "book"],
     distractors: ["write", "she"],
-    image: "assets/read_book.png"
+    image: "assets/read_book.png",
+    emoji: "📖"
   },
   {
     statement: "paint a picture",
     words: ["paint", "a", "picture"],
     distractors: ["draw", "we"],
-    image: "assets/paint_picture.png"
+    image: "assets/paint_picture.png",
+    emoji: "🎨"
   },
   {
     statement: "drink some water",
     words: ["drink", "some", "water"],
     distractors: ["eat", "it"],
-    image: "assets/drink_water.png"
+    image: "assets/drink_water.png",
+    emoji: "💧"
   },
   {
     statement: "eat an apple",
     words: ["eat", "an", "apple"],
     distractors: ["peel", "you"],
-    image: "assets/eat_apple.png"
+    image: "assets/eat_apple.png",
+    emoji: "🍎"
   },
   {
     statement: "fly a kite",
     words: ["fly", "a", "kite"],
     distractors: ["make", "sky"],
-    image: "assets/fly_kite.png"
+    image: "assets/fly_kite.png",
+    emoji: "🪁"
   },
   {
     statement: "climb a tree",
     words: ["climb", "a", "tree"],
     distractors: ["jump", "up"],
-    image: "assets/climb_tree.png"
+    image: "assets/climb_tree.png",
+    emoji: "🌳"
   },
   {
     statement: "wash your hands",
     words: ["wash", "your", "hands"],
     distractors: ["brush", "soap"],
-    image: "assets/wash_hands.png"
+    image: "assets/wash_hands.png",
+    emoji: "🧼"
   },
   {
     statement: "brush your teeth",
     words: ["brush", "your", "teeth"],
     distractors: ["wash", "clean"],
-    image: "assets/brush_teeth.png"
+    image: "assets/brush_teeth.png",
+    emoji: "🪥"
   }
 ];
 
@@ -278,6 +288,12 @@ function animateConfetti() {
 }
 
 // DOM Elements
+const startScreen = document.getElementById('startScreen');
+const gameContainer = document.getElementById('gameContainer');
+const levelGrid = document.getElementById('levelGrid');
+const menuBtn = document.getElementById('menuBtn');
+const victoryMenuBtn = document.getElementById('victoryMenuBtn');
+
 const verbImage = document.getElementById('verbImage');
 const speakPhraseBtn = document.getElementById('speakPhraseBtn');
 const slotsTray = document.getElementById('slotsTray');
@@ -302,6 +318,38 @@ function shuffle(array) {
     [arr[i], arr[j]] = [arr[j], arr[i]];
   }
   return arr;
+}
+
+// Generate the level selector grid dynamically
+function renderLevelGrid() {
+  levelGrid.innerHTML = '';
+  levels.forEach((level, index) => {
+    const card = document.createElement('button');
+    card.className = 'level-card';
+    card.setAttribute('aria-label', `Play level ${index + 1}: ${level.statement}`);
+    
+    card.innerHTML = `
+      <span class="level-card-icon">${level.emoji}</span>
+      <span class="level-card-title">${level.statement}</span>
+      <span class="level-card-num">${index + 1}</span>
+    `;
+    
+    card.addEventListener('click', () => {
+      playSound('click');
+      currentLevelIndex = index;
+      
+      // Memoize choices for the chosen level
+      levelChoicesMemo = shuffle([...level.words, ...level.distractors]);
+      
+      initLevel();
+      
+      // Screen transition
+      startScreen.classList.add('hidden');
+      gameContainer.classList.remove('hidden');
+    });
+    
+    levelGrid.appendChild(card);
+  });
 }
 
 // Initialize Level
@@ -516,7 +564,24 @@ soundToggle.addEventListener('click', () => {
   }
 });
 
-// Reset Game
+// Navigation Back to Menu Click Bindings
+menuBtn.addEventListener('click', () => {
+  playSound('click');
+  gameContainer.classList.add('hidden');
+  startScreen.classList.remove('hidden');
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+  }
+});
+
+victoryMenuBtn.addEventListener('click', () => {
+  playSound('click');
+  victoryModal.classList.add('hidden');
+  gameContainer.classList.add('hidden');
+  startScreen.classList.remove('hidden');
+});
+
+// Reset Game (Play Again from victory modal starts game from level 1 directly)
 function resetGame() {
   currentLevelIndex = 0;
   score = 0;
@@ -527,6 +592,10 @@ function resetGame() {
   levelChoicesMemo = shuffle([...firstLevel.words, ...firstLevel.distractors]);
   
   initLevel();
+  
+  // Transitions
+  startScreen.classList.add('hidden');
+  gameContainer.classList.remove('hidden');
 }
 
 playAgainBtn.addEventListener('click', () => {
@@ -536,5 +605,6 @@ playAgainBtn.addEventListener('click', () => {
 
 // Bootstrap game initialization
 window.addEventListener('load', () => {
-  resetGame();
+  renderLevelGrid();
+  scoreValue.textContent = score;
 });
