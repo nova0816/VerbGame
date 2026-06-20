@@ -252,7 +252,7 @@ function startConfetti() {
   animateConfetti();
   setTimeout(() => {
     confettiActive = false;
-  }, 4000);
+  }, 1500);
 }
 
 function animateConfetti() {
