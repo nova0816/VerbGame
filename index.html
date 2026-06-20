@@ -84,7 +84,10 @@
       <!-- Left Panel: Picture Card -->
       <section class="pic-panel">
         <div class="image-frame-container">
-          <img id="verbImage" src="assets/throw_ball.png" alt="Action illustration" class="verb-image" draggable="false">
+          <img id="verbImage" src="assets/throw_ball.png" alt="Action illustration" class="verb-image" draggable="false" onerror="handleImageError()">
+          <div id="imageFallback" class="image-fallback hidden">
+            <span id="fallbackEmoji" class="fallback-emoji">⚽</span>
+          </div>
           <!-- Text to speech overlay button -->
           <button class="speak-btn-overlay" id="speakPhraseBtn" title="Hear phrase" aria-label="Read complete phrase aloud">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="28" height="28">

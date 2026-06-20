@@ -260,6 +260,28 @@ body {
   transition: transform 0.5s ease;
 }
 
+.image-fallback {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #ffeef4 0%, #ffdfeb 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: var(--border-radius-md);
+  box-shadow: inset 0 0 30px rgba(236, 72, 153, 0.05);
+}
+
+.fallback-emoji {
+  font-size: 90px;
+  filter: drop-shadow(0 10px 20px rgba(236, 72, 153, 0.2));
+  animation: emojiWiggle 3s infinite ease-in-out;
+}
+
+@keyframes emojiWiggle {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.1) rotate(6deg); }
+}
+
 .image-frame-container:hover .verb-image {
   transform: scale(1.03);
 }

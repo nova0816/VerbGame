@@ -71,6 +71,146 @@ const levels = [
     distractors: ["wash", "clean"],
     image: "assets/brush_teeth.png",
     emoji: "🪥"
+  },
+  {
+    statement: "blow a bubble",
+    words: ["blow", "a", "bubble"],
+    distractors: ["pop", "water"],
+    image: "assets/blow_bubble.png",
+    emoji: "🫧"
+  },
+  {
+    statement: "bounce a ball",
+    words: ["bounce", "a", "ball"],
+    distractors: ["throw", "toy"],
+    image: "assets/bounce_ball.png",
+    emoji: "🏀"
+  },
+  {
+    statement: "hug a teddy",
+    words: ["hug", "a", "teddy"],
+    distractors: ["hold", "friend"],
+    image: "assets/hug_teddy.png",
+    emoji: "🧸"
+  },
+  {
+    statement: "kick a ball",
+    words: ["kick", "a", "ball"],
+    distractors: ["catch", "run"],
+    image: "assets/kick_ball.png",
+    emoji: "⚽"
+  },
+  {
+    statement: "draw a flower",
+    words: ["draw", "a", "flower"],
+    distractors: ["paint", "sun"],
+    image: "assets/draw_flower.png",
+    emoji: "🖍️"
+  },
+  {
+    statement: "dig in dirt",
+    words: ["dig", "in", "dirt"],
+    distractors: ["plant", "sand"],
+    image: "assets/dig_dirt.png",
+    emoji: "🌱"
+  },
+  {
+    statement: "feed the dog",
+    words: ["feed", "the", "dog"],
+    distractors: ["walk", "cat"],
+    image: "assets/feed_dog.png",
+    emoji: "🐶"
+  },
+  {
+    statement: "slide down slide",
+    words: ["slide", "down", "slide"],
+    distractors: ["climb", "up"],
+    image: "assets/slide_slide.png",
+    emoji: "🛝"
+  },
+  {
+    statement: "swing on swing",
+    words: ["swing", "on", "swing"],
+    distractors: ["jump", "high"],
+    image: "assets/swing_swing.png",
+    emoji: "🌳"
+  },
+  {
+    statement: "open the door",
+    words: ["open", "the", "door"],
+    distractors: ["close", "key"],
+    image: "assets/open_door.png",
+    emoji: "🚪"
+  },
+  {
+    statement: "close the box",
+    words: ["close", "the", "box"],
+    distractors: ["open", "toy"],
+    image: "assets/close_box.png",
+    emoji: "📦"
+  },
+  {
+    statement: "sweep the floor",
+    words: ["sweep", "the", "floor"],
+    distractors: ["clean", "dust"],
+    image: "assets/sweep_floor.png",
+    emoji: "🧹"
+  },
+  {
+    statement: "comb your hair",
+    words: ["comb", "your", "hair"],
+    distractors: ["brush", "head"],
+    image: "assets/comb_hair.png",
+    emoji: "🪮"
+  },
+  {
+    statement: "wear your shoes",
+    words: ["wear", "your", "shoes"],
+    distractors: ["tie", "socks"],
+    image: "assets/wear_shoes.png",
+    emoji: "👟"
+  },
+  {
+    statement: "plant a seed",
+    words: ["plant", "a", "seed"],
+    distractors: ["grow", "pot"],
+    image: "assets/plant_seed.png",
+    emoji: "🪴"
+  },
+  {
+    statement: "fold the clothes",
+    words: ["fold", "the", "clothes"],
+    distractors: ["wash", "basket"],
+    image: "assets/fold_clothes.png",
+    emoji: "👕"
+  },
+  {
+    statement: "water the plants",
+    words: ["water", "the", "plants"],
+    distractors: ["dig", "flower"],
+    image: "assets/water_plants.png",
+    emoji: "💦"
+  },
+  {
+    statement: "bake a cake",
+    words: ["bake", "a", "cake"],
+    distractors: ["cook", "chef"],
+    image: "assets/bake_cake.png",
+    emoji: "🍰"
+  },
+  {
+    statement: "jump on bed",
+    words: ["jump", "on", "bed"],
+    distractors: ["sleep", "play"],
+    image: "assets/jump_bed.png",
+    emoji: "🛏️"
+  },
+  {
+    statement: "sing a song",
+    words: ["sing", "a", "song"],
+    distractors: ["dance", "mic"],
+    image: "assets/sing_song.png",
+    emoji: "🎤"
   }
 ];
 
@@ -364,6 +504,9 @@ function initLevel() {
   slotsTray.classList.remove('correct', 'incorrect');
   
   // Set image and accessibility content
+  verbImage.classList.remove('hidden');
+  document.getElementById('imageFallback').classList.add('hidden');
+  
   verbImage.src = currentLevel.image;
   verbImage.alt = `Illustration for action: ${currentLevel.statement}`;
   
@@ -608,3 +751,15 @@ window.addEventListener('load', () => {
   renderLevelGrid();
   scoreValue.textContent = score;
 });
+
+// Image load error handler (fallback to emoji card)
+function handleImageError() {
+  const currentLevel = levels[currentLevelIndex];
+  const verbImage = document.getElementById('verbImage');
+  const imageFallback = document.getElementById('imageFallback');
+  const fallbackEmoji = document.getElementById('fallbackEmoji');
+  
+  verbImage.classList.add('hidden');
+  imageFallback.classList.remove('hidden');
+  fallbackEmoji.textContent = currentLevel.emoji;
+}
