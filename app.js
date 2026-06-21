@@ -478,16 +478,6 @@ function renderLevelGrid() {
     card.addEventListener('click', () => {
       playSound('click');
       currentLevelIndex = index;
-      
-      // Memoize choices for the chosen level based on difficulty
-      if (currentDifficulty === 'normal') {
-        const correctVerb = level.words[0];
-        const dists = getRandomVerbDistractors(correctVerb);
-        levelChoicesMemo = shuffle([correctVerb, ...dists]);
-      } else {
-        levelChoicesMemo = shuffle([...level.words, ...level.distractors]);
-      }
-      
       initLevel();
       
       // Screen transition
@@ -541,11 +531,17 @@ function initLevel() {
     speakPhraseBtn.classList.add('hidden');
   }
 
-  // Compile choice list
-  let choices = getLevelChoices();
+  // Compile choice list based on difficulty
+  if (currentDifficulty === 'normal') {
+    const correctVerb = currentLevel.words[0];
+    const dists = getRandomVerbDistractors(correctVerb);
+    levelChoicesMemo = shuffle([correctVerb, ...dists]);
+  } else {
+    levelChoicesMemo = shuffle([...currentLevel.words, ...currentLevel.distractors]);
+  }
 
   renderSlotsTray();
-  renderWordDeck(choices);
+  renderWordDeck(levelChoicesMemo);
 }
 
 // Render slots tray
@@ -697,9 +693,6 @@ nextLevelBtn.addEventListener('click', () => {
   currentLevelIndex++;
   
   if (currentLevelIndex < levels.length) {
-    // Reset memoized choices for the next level
-    const nextLevel = levels[currentLevelIndex];
-    levelChoicesMemo = shuffle([...nextLevel.words, ...nextLevel.distractors]);
     initLevel();
   } else {
     // Completed all levels! Show Victory Modal
@@ -748,17 +741,6 @@ function resetGame() {
   currentLevelIndex = 0;
   score = 0;
   victoryModal.classList.add('hidden');
-  
-  // Set up memoized choices for first level based on difficulty
-  const firstLevel = levels[0];
-  if (currentDifficulty === 'normal') {
-    const correctVerb = firstLevel.words[0];
-    const dists = getRandomVerbDistractors(correctVerb);
-    levelChoicesMemo = shuffle([correctVerb, ...dists]);
-  } else {
-    levelChoicesMemo = shuffle([...firstLevel.words, ...firstLevel.distractors]);
-  }
-  
   initLevel();
   
   // Transitions
