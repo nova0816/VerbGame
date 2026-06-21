@@ -33,6 +33,7 @@
         <span class="difficulty-title">Select Stage:</span>
         <div class="difficulty-tabs">
           <button class="diff-tab active" id="diffEasy" data-diff="easy" aria-label="Easy Stage">Easy 🟢</button>
+          <button class="diff-tab" id="diffListen" data-diff="listen" aria-label="Listen Stage">Listen 🔵</button>
           <button class="diff-tab" id="diffNormal" data-diff="normal" aria-label="Normal Stage">Normal 🟡</button>
           <button class="diff-tab" id="diffHard" data-diff="hard" aria-label="Hard Stage">Hard 🔴</button>
         </div>
@@ -90,7 +91,7 @@
     </div>
 
     <!-- Main Workspace -->
-    <main class="game-main">
+    <main class="game-main" id="gameMain">
       <!-- Left Panel: Picture Card -->
       <section class="pic-panel">
         <div class="image-frame-container">
@@ -135,6 +136,35 @@
         </div>
       </section>
     </main>
+
+    <!-- Listen & Match Stage Workspace (shown only in Listen mode) -->
+    <div class="listen-main hidden" id="listenMain">
+      <div class="listen-instructions">
+        <span class="sound-emoji">🔊</span> Tap the matching picture!
+      </div>
+      
+      <!-- Replay Voice Button -->
+      <button class="speak-btn-large" id="listenReplayBtn" title="Hear phrase again" aria-label="Hear phrase again">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="36" height="36">
+          <path d="M13.5 4.06c0-1.336-1.616-2.005-2.56-1.06l-4.5 4.5H4.508c-1.141 0-2.063.922-2.063 2.063v4.874c0 1.141.922 2.063 2.063 2.063h1.932l4.5 4.5c.944.945 2.56.276 2.56-1.06V4.06zM18.57 17.47a.75.75 0 11-1.06-1.06 5.972 5.972 0 000-8.42.75.75 0 111.06-1.06 7.472 7.472 0 010 10.54z" />
+          <path d="M16.44 14.34a.75.75 0 11-1.06-1.06 2.972 2.972 0 000-4.22.75.75 0 111.06-1.06 4.472 4.472 0 010 6.34z" />
+        </svg>
+        <span>Hear It!</span>
+      </button>
+
+      <!-- 3 Picture Choices -->
+      <div class="listen-grid" id="listenGrid">
+        <!-- Will be populated dynamically by app.js -->
+      </div>
+      
+      <!-- Control Action Row for Listen Mode -->
+      <div class="action-row" style="width: 100%; max-width: 900px; margin-top: 10px;">
+        <div class="message-banner hidden" id="listenMessageBanner" style="margin-right: auto;">
+          <span class="message-text" id="listenMessageText">Great job! 🎉</span>
+        </div>
+        <button class="action-btn hidden" id="listenNextLevelBtn">Next Level ➔</button>
+      </div>
+    </div>
   </div>
 
   <!-- Victory Overlay Modal -->

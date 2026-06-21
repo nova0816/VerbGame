@@ -221,6 +221,7 @@ let selectedWords = []; // Array of strings currently placed in slots
 let soundMuted = false;
 let isCurrentLevelSolved = false;
 let currentDifficulty = 'easy';
+let listenChoicesMemo = [];
 
 // Audio Context for sound synthesis (no external assets needed)
 let audioCtx = null;
@@ -451,6 +452,14 @@ const soundOffIcon = document.getElementById('soundOffIcon');
 const victoryModal = document.getElementById('victoryModal');
 const playAgainBtn = document.getElementById('playAgainBtn');
 
+// Listen Mode DOM Elements
+const listenMain = document.getElementById('listenMain');
+const listenGrid = document.getElementById('listenGrid');
+const listenReplayBtn = document.getElementById('listenReplayBtn');
+const listenMessageBanner = document.getElementById('listenMessageBanner');
+const listenMessageText = document.getElementById('listenMessageText');
+const listenNextLevelBtn = document.getElementById('listenNextLevelBtn');
+
 // Fisher-Yates Shuffle
 function shuffle(array) {
   const arr = [...array];
@@ -501,6 +510,95 @@ function getRandomVerbDistractors(correctVerb) {
   return shuffle(otherVerbs).slice(0, 3);
 }
 
+// Get 2 unique random level indices as distractors for Listen mode
+function getRandomListenDistractors(correctIndex) {
+  const otherIndices = [];
+  for (let i = 0; i < levels.length; i++) {
+    if (i !== correctIndex) {
+      otherIndices.push(i);
+    }
+  }
+  const shuffled = shuffle(otherIndices);
+  return [shuffled[0], shuffled[1]];
+}
+
+// Render Listen & Match Stage pictures
+function renderListenStage() {
+  const currentLevel = levels[currentLevelIndex];
+  listenGrid.innerHTML = '';
+  
+  listenMessageBanner.classList.add('hidden');
+  listenNextLevelBtn.classList.add('hidden');
+  
+  listenChoicesMemo.forEach(lvlIndex => {
+    const optLevel = levels[lvlIndex];
+    
+    const card = document.createElement('button');
+    card.className = 'listen-pic-card';
+    card.setAttribute('aria-label', `Choose picture: ${optLevel.statement}`);
+    
+    const img = document.createElement('img');
+    img.src = optLevel.image;
+    img.alt = `Illustration choice`;
+    img.className = 'listen-pic-img';
+    img.draggable = false;
+    
+    const fallback = document.createElement('div');
+    fallback.className = 'listen-pic-fallback hidden';
+    fallback.innerHTML = `<span class="fallback-emoji-small">${optLevel.emoji}</span>`;
+    
+    img.onerror = () => {
+      img.classList.add('hidden');
+      fallback.classList.remove('hidden');
+    };
+    
+    card.appendChild(img);
+    card.appendChild(fallback);
+    
+    card.addEventListener('click', () => {
+      if (isCurrentLevelSolved) return;
+      
+      if (lvlIndex === currentLevelIndex) {
+        // Correct choice!
+        isCurrentLevelSolved = true;
+        score += 10;
+        scoreValue.textContent = score;
+        card.classList.add('correct');
+        playSound('correct');
+        startConfetti();
+        
+        setTimeout(() => {
+          speak(currentLevel.statement);
+        }, 400);
+        
+        const congratsMessages = [
+          "Excellent job! 🎉",
+          "Fantastic! You got it! 🌟",
+          "Super star! ⭐",
+          "You are amazing! 🎈",
+          "Wow! Spot on! 🌈"
+        ];
+        listenMessageText.textContent = congratsMessages[Math.floor(Math.random() * congratsMessages.length)];
+        listenMessageBanner.classList.remove('hidden');
+        listenNextLevelBtn.classList.remove('hidden');
+      } else {
+        // Incorrect choice!
+        card.classList.add('incorrect');
+        playSound('incorrect');
+        
+        listenMessageText.textContent = "Oops! Try again. 💡";
+        listenMessageBanner.classList.remove('hidden');
+        
+        setTimeout(() => {
+          card.classList.remove('incorrect');
+        }, 800);
+      }
+    });
+    
+    listenGrid.appendChild(card);
+  });
+}
+
 // Initialize Level
 function initLevel() {
   const currentLevel = levels[currentLevelIndex];
@@ -510,38 +608,59 @@ function initLevel() {
   // Hide UI elements from previous solved level
   messageBanner.classList.add('hidden');
   nextLevelBtn.classList.add('hidden');
+  listenMessageBanner.classList.add('hidden');
+  listenNextLevelBtn.classList.add('hidden');
   slotsTray.classList.remove('correct', 'incorrect');
   
-  // Reset fallback image state
-  verbImage.classList.remove('hidden');
-  document.getElementById('imageFallback').classList.add('hidden');
-  
-  verbImage.src = currentLevel.image;
-  verbImage.alt = `Illustration for action: ${currentLevel.statement}`;
-  
-  // Update indicators
+  // Update indicators (used by both modes)
   levelIndicator.textContent = `Level ${currentLevelIndex + 1} of ${levels.length}`;
   progressFill.style.width = `${((currentLevelIndex) / levels.length) * 100}%`;
   scoreValue.textContent = score;
 
-  // Toggle voice help overlay button visibility
-  if (currentDifficulty === 'easy') {
-    speakPhraseBtn.classList.remove('hidden');
+  if (currentDifficulty === 'listen') {
+    document.getElementById('gameMain').classList.add('hidden');
+    listenMain.classList.remove('hidden');
+    
+    // Set up options with distractors
+    const distractors = getRandomListenDistractors(currentLevelIndex);
+    listenChoicesMemo = shuffle([currentLevelIndex, ...distractors]);
+    
+    renderListenStage();
+    
+    // Auto-read the target phrase
+    setTimeout(() => {
+      speak(currentLevel.statement);
+    }, 500);
   } else {
-    speakPhraseBtn.classList.add('hidden');
-  }
+    document.getElementById('gameMain').classList.remove('hidden');
+    listenMain.classList.add('hidden');
+    
+    // Reset fallback image state
+    verbImage.classList.remove('hidden');
+    document.getElementById('imageFallback').classList.add('hidden');
+    
+    verbImage.src = currentLevel.image;
+    verbImage.alt = `Illustration for action: ${currentLevel.statement}`;
+    
+    // Toggle voice help overlay button visibility
+    if (currentDifficulty === 'easy') {
+      speakPhraseBtn.classList.remove('hidden');
+    } else {
+      speakPhraseBtn.classList.add('hidden');
+    }
 
-  // Compile choice list based on difficulty
-  if (currentDifficulty === 'normal') {
-    const correctVerb = currentLevel.words[0];
-    const dists = getRandomVerbDistractors(correctVerb);
-    levelChoicesMemo = shuffle([correctVerb, ...dists]);
-  } else {
-    levelChoicesMemo = shuffle([...currentLevel.words, ...currentLevel.distractors]);
-  }
+    // Compile choice list based on difficulty
+    if (currentDifficulty === 'normal') {
+      const correctVerb = currentLevel.words[0];
+      const dists = getRandomVerbDistractors(correctVerb);
+      levelChoicesMemo = shuffle([correctVerb, ...dists]);
+    } else {
+      levelChoicesMemo = shuffle([...currentLevel.words, ...currentLevel.distractors]);
+    }
 
-  renderSlotsTray();
-  renderWordDeck(levelChoicesMemo);
+    renderSlotsTray();
+    renderWordDeck(levelChoicesMemo);
+  }
 }
 
 // Render slots tray
@@ -688,7 +807,13 @@ speakPhraseBtn.addEventListener('click', () => {
   speak(currentLevel.statement);
 });
 
-nextLevelBtn.addEventListener('click', () => {
+listenReplayBtn.addEventListener('click', () => {
+  playSound('click');
+  const currentLevel = levels[currentLevelIndex];
+  speak(currentLevel.statement);
+});
+
+function handleNextLevel() {
   playSound('click');
   currentLevelIndex++;
   
@@ -701,7 +826,10 @@ nextLevelBtn.addEventListener('click', () => {
     startConfetti();
     victoryModal.classList.remove('hidden');
   }
-});
+}
+
+nextLevelBtn.addEventListener('click', handleNextLevel);
+listenNextLevelBtn.addEventListener('click', handleNextLevel);
 
 // Sound Volume Mute Control
 soundToggle.addEventListener('click', () => {
