@@ -316,7 +316,7 @@ function playSound(type) {
 
 // Text-to-Speech synthesis
 function speak(text, slow = false) {
-  if (soundMuted || currentDifficulty !== 'easy') return;
+  if (soundMuted) return;
   if ('speechSynthesis' in window) {
     // Cancel any current speaking
     window.speechSynthesis.cancel();
@@ -605,7 +605,7 @@ function renderWordDeck(availableChoices) {
       
       if (selectedWords.length < maxSlots) {
         playSound('click');
-        speak(word); // will only speak if currentDifficulty === 'easy'
+        speak(word);
         selectedWords.push(word);
         updateGameFlow();
       }
@@ -658,7 +658,7 @@ function checkAnswer() {
     playSound('correct');
     startConfetti();
     setTimeout(() => {
-      speak(currentLevel.statement); // will only speak if currentDifficulty === 'easy'
+      speak(currentLevel.statement);
     }, 400);
 
     const congratsMessages = [
