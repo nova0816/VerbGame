@@ -220,6 +220,7 @@ let score = 0;
 let selectedWords = []; // Array of strings currently placed in slots
 let soundMuted = false;
 let isCurrentLevelSolved = false;
+let currentDifficulty = 'easy';
 
 // Audio Context for sound synthesis (no external assets needed)
 let audioCtx = null;
@@ -315,7 +316,7 @@ function playSound(type) {
 
 // Text-to-Speech synthesis
 function speak(text, slow = false) {
-  if (soundMuted) return;
+  if (soundMuted || currentDifficulty !== 'easy') return;
   if ('speechSynthesis' in window) {
     // Cancel any current speaking
     window.speechSynthesis.cancel();
@@ -478,8 +479,14 @@ function renderLevelGrid() {
       playSound('click');
       currentLevelIndex = index;
       
-      // Memoize choices for the chosen level
-      levelChoicesMemo = shuffle([...level.words, ...level.distractors]);
+      // Memoize choices for the chosen level based on difficulty
+      if (currentDifficulty === 'normal') {
+        const correctVerb = level.words[0];
+        const dists = getRandomVerbDistractors(correctVerb);
+        levelChoicesMemo = shuffle([correctVerb, ...dists]);
+      } else {
+        levelChoicesMemo = shuffle([...level.words, ...level.distractors]);
+      }
       
       initLevel();
       
@@ -490,6 +497,18 @@ function renderLevelGrid() {
     
     levelGrid.appendChild(card);
   });
+}
+
+// Get 3 unique random verbs from other levels as distractors
+function getRandomVerbDistractors(correctVerb) {
+  const otherVerbs = [];
+  levels.forEach(lvl => {
+    const verb = lvl.words[0];
+    if (verb !== correctVerb && !otherVerbs.includes(verb)) {
+      otherVerbs.push(verb);
+    }
+  });
+  return shuffle(otherVerbs).slice(0, 3);
 }
 
 // Initialize Level
@@ -503,7 +522,7 @@ function initLevel() {
   nextLevelBtn.classList.add('hidden');
   slotsTray.classList.remove('correct', 'incorrect');
   
-  // Set image and accessibility content
+  // Reset fallback image state
   verbImage.classList.remove('hidden');
   document.getElementById('imageFallback').classList.add('hidden');
   
@@ -515,8 +534,15 @@ function initLevel() {
   progressFill.style.width = `${((currentLevelIndex) / levels.length) * 100}%`;
   scoreValue.textContent = score;
 
-  // Compile full choice list (correct words + distractors)
-  const choices = shuffle([...currentLevel.words, ...currentLevel.distractors]);
+  // Toggle voice help overlay button visibility
+  if (currentDifficulty === 'easy') {
+    speakPhraseBtn.classList.remove('hidden');
+  } else {
+    speakPhraseBtn.classList.add('hidden');
+  }
+
+  // Compile choice list
+  let choices = getLevelChoices();
 
   renderSlotsTray();
   renderWordDeck(choices);
@@ -527,8 +553,9 @@ function renderSlotsTray() {
   slotsTray.innerHTML = '';
   const currentLevel = levels[currentLevelIndex];
   
-  // Render slots
-  for (let i = 0; i < currentLevel.words.length; i++) {
+  // Render slots based on difficulty (1 slot for Normal, full sentence length for Easy/Hard)
+  const slotsCount = currentDifficulty === 'normal' ? 1 : currentLevel.words.length;
+  for (let i = 0; i < slotsCount; i++) {
     const slot = document.createElement('div');
     slot.className = 'slot-placeholder';
     
@@ -558,22 +585,18 @@ function renderSlotsTray() {
 function renderWordDeck(availableChoices) {
   wordDeck.innerHTML = '';
   
-  // Filter out words that have already been placed in slots
-  // We want to make sure if a word is used, it's hidden from the choice deck
   let tempSelected = [...selectedWords];
   const remainingChoices = [];
   
   availableChoices.forEach(choice => {
     const index = tempSelected.indexOf(choice);
     if (index > -1) {
-      // Word is selected, omit from choice deck
       tempSelected.splice(index, 1);
     } else {
       remainingChoices.push(choice);
     }
   });
 
-  // Render remaining cards
   remainingChoices.forEach(word => {
     const card = document.createElement('button');
     card.className = 'word-card';
@@ -582,10 +605,11 @@ function renderWordDeck(availableChoices) {
     card.addEventListener('click', () => {
       if (isCurrentLevelSolved) return;
       const currentLevel = levels[currentLevelIndex];
+      const maxSlots = currentDifficulty === 'normal' ? 1 : currentLevel.words.length;
       
-      if (selectedWords.length < currentLevel.words.length) {
+      if (selectedWords.length < maxSlots) {
         playSound('click');
-        speak(word); // Read word aloud when kid taps it
+        speak(word); // will only speak if currentDifficulty === 'easy'
         selectedWords.push(word);
         updateGameFlow();
       }
@@ -597,21 +621,16 @@ function renderWordDeck(availableChoices) {
 
 // Update game flow when card is selected or deselected
 function updateGameFlow() {
-  const currentLevel = levels[currentLevelIndex];
-  
-  // Re-render components
   renderSlotsTray();
-  
-  // To keep choices deck stable, we gather original choices and filter
   const choices = getLevelChoices();
   renderWordDeck(choices);
   
-  // Reset feedback state while they adjust cards
   slotsTray.classList.remove('correct', 'incorrect');
   messageBanner.classList.add('hidden');
   
   // Auto-check once all slots are filled
-  if (selectedWords.length === currentLevel.words.length) {
+  const maxSlots = currentDifficulty === 'normal' ? 1 : levels[currentLevelIndex].words.length;
+  if (selectedWords.length === maxSlots) {
     checkAnswer();
   }
 }
@@ -619,31 +638,33 @@ function updateGameFlow() {
 // Gather all choices (ordered consistently per level session)
 let levelChoicesMemo = [];
 function getLevelChoices() {
-  // Memoize deck scramble per level to avoid items bouncing around randomly
   return levelChoicesMemo;
 }
 
 // Check Answer
 function checkAnswer() {
   const currentLevel = levels[currentLevelIndex];
-  const joinedAnswer = selectedWords.join(' ');
-  const correctAnswer = currentLevel.statement;
   
-  if (joinedAnswer === correctAnswer) {
+  let isCorrect = false;
+  if (currentDifficulty === 'normal') {
+    isCorrect = (selectedWords[0] === currentLevel.words[0]);
+  } else {
+    isCorrect = (selectedWords.join(' ') === currentLevel.statement);
+  }
+  
+  if (isCorrect) {
     // CORRECT!
     isCurrentLevelSolved = true;
     score += 10;
     scoreValue.textContent = score;
     slotsTray.classList.add('correct');
     
-    // Play sound, celebrate, and speak complete phrase
     playSound('correct');
     startConfetti();
     setTimeout(() => {
-      speak(correctAnswer);
+      speak(currentLevel.statement); // will only speak if currentDifficulty === 'easy'
     }, 400);
 
-    // Show banner & next button
     const congratsMessages = [
       "Excellent job! 🎉",
       "Fantastic! You got it! 🌟",
@@ -654,13 +675,11 @@ function checkAnswer() {
     messageText.textContent = congratsMessages[Math.floor(Math.random() * congratsMessages.length)];
     messageBanner.classList.remove('hidden');
     nextLevelBtn.classList.remove('hidden');
-    
   } else {
     // INCORRECT!
     slotsTray.classList.add('incorrect');
     playSound('incorrect');
     
-    // Show supportive feedback
     messageText.textContent = "Oops! Try arranging the cards again. 💡";
     messageBanner.classList.remove('hidden');
   }
@@ -730,9 +749,15 @@ function resetGame() {
   score = 0;
   victoryModal.classList.add('hidden');
   
-  // Set up memoized choices for first level
+  // Set up memoized choices for first level based on difficulty
   const firstLevel = levels[0];
-  levelChoicesMemo = shuffle([...firstLevel.words, ...firstLevel.distractors]);
+  if (currentDifficulty === 'normal') {
+    const correctVerb = firstLevel.words[0];
+    const dists = getRandomVerbDistractors(correctVerb);
+    levelChoicesMemo = shuffle([correctVerb, ...dists]);
+  } else {
+    levelChoicesMemo = shuffle([...firstLevel.words, ...firstLevel.distractors]);
+  }
   
   initLevel();
   
@@ -746,9 +771,23 @@ playAgainBtn.addEventListener('click', () => {
   resetGame();
 });
 
+// Difficulty Tab Switcher Controller
+function initDifficultySelector() {
+  const tabs = document.querySelectorAll('.diff-tab');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      playSound('click');
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      currentDifficulty = tab.dataset.diff;
+    });
+  });
+}
+
 // Bootstrap game initialization
 window.addEventListener('load', () => {
   renderLevelGrid();
+  initDifficultySelector();
   scoreValue.textContent = score;
 });
 

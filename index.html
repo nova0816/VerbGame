@@ -28,6 +28,16 @@
       <h1 class="start-title">Word Explorer</h1>
       <p class="start-subtitle">Choose an action to start learning! 🔊🌟</p>
       
+      <!-- Difficulty Selector Tab Buttons -->
+      <div class="difficulty-panel">
+        <span class="difficulty-title">Select Stage:</span>
+        <div class="difficulty-tabs">
+          <button class="diff-tab active" id="diffEasy" data-diff="easy" aria-label="Easy Stage">Easy 🟢</button>
+          <button class="diff-tab" id="diffNormal" data-diff="normal" aria-label="Normal Stage">Normal 🟡</button>
+          <button class="diff-tab" id="diffHard" data-diff="hard" aria-label="Hard Stage">Hard 🔴</button>
+        </div>
+      </div>
+      
       <!-- Puzzle / Level Selection Grid -->
       <div class="level-grid" id="levelGrid">
         <!-- Will be populated dynamically by app.js -->
