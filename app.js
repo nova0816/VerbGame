@@ -211,6 +211,216 @@ const levels = [
     distractors: ["dance", "mic"],
     image: "assets/sing_song.png",
     emoji: "🎤"
+  },
+  {
+    statement: "sleep in bed",
+    words: ["sleep", "in", "bed"],
+    distractors: ["wake", "awake", "play"],
+    image: "assets/sleep_bed.png",
+    emoji: "🛌"
+  },
+  {
+    statement: "fall down",
+    words: ["fall", "down"],
+    distractors: ["climb", "up", "jump"],
+    image: "assets/fall_down.png",
+    emoji: "🤸"
+  },
+  {
+    statement: "look at bugs",
+    words: ["look", "at", "bugs"],
+    distractors: ["eat", "hear", "touch"],
+    image: "assets/look_bugs.png",
+    emoji: "🔍"
+  },
+  {
+    statement: "see a rainbow",
+    words: ["see", "a", "rainbow"],
+    distractors: ["paint", "make", "sky"],
+    image: "assets/see_rainbow.png",
+    emoji: "🌈"
+  },
+  {
+    statement: "run in park",
+    words: ["run", "in", "park"],
+    distractors: ["sit", "crawl", "street"],
+    image: "assets/run_park.png",
+    emoji: "🏃"
+  },
+  {
+    statement: "swim in pool",
+    words: ["swim", "in", "pool"],
+    distractors: ["fly", "skate", "water"],
+    image: "assets/swim_pool.png",
+    emoji: "🏊"
+  },
+  {
+    statement: "walk to school",
+    words: ["walk", "to", "school"],
+    distractors: ["run", "drive", "home"],
+    image: "assets/walk_school.png",
+    emoji: "🎒"
+  },
+  {
+    statement: "laugh at joke",
+    words: ["laugh", "at", "joke"],
+    distractors: ["cry", "yawn", "funny"],
+    image: "assets/laugh_joke.png",
+    emoji: "😆"
+  },
+  {
+    statement: "cry sad tears",
+    words: ["cry", "sad", "tears"],
+    distractors: ["smile", "laugh", "happy"],
+    image: "assets/cry_tears.png",
+    emoji: "😢"
+  },
+  {
+    statement: "clap your hands",
+    words: ["clap", "your", "hands"],
+    distractors: ["wave", "wash", "feet"],
+    image: "assets/clap_hands.png",
+    emoji: "👏"
+  },
+  {
+    statement: "dance with joy",
+    words: ["dance", "with", "joy"],
+    distractors: ["sing", "sit", "music"],
+    image: "assets/dance_joy.png",
+    emoji: "💃"
+  },
+  {
+    statement: "hop like frog",
+    words: ["hop", "like", "frog"],
+    distractors: ["walk", "swim", "toad"],
+    image: "assets/hop_frog.png",
+    emoji: "🐸"
+  },
+  {
+    statement: "push the cart",
+    words: ["push", "the", "cart"],
+    distractors: ["pull", "ride", "basket"],
+    image: "assets/push_cart.png",
+    emoji: "🛒"
+  },
+  {
+    statement: "pull the wagon",
+    words: ["pull", "the", "wagon"],
+    distractors: ["push", "carry", "toy"],
+    image: "assets/pull_wagon.png",
+    emoji: "🔴"
+  },
+  {
+    statement: "catch a fish",
+    words: ["catch", "a", "fish"],
+    distractors: ["throw", "eat", "water"],
+    image: "assets/catch_fish.png",
+    emoji: "🎣"
+  },
+  {
+    statement: "hide behind tree",
+    words: ["hide", "behind", "tree"],
+    distractors: ["show", "climb", "forest"],
+    image: "assets/hide_tree.png",
+    emoji: "🫣"
+  },
+  {
+    statement: "find a treasure",
+    words: ["find", "a", "treasure"],
+    distractors: ["lose", "hide", "gold"],
+    image: "assets/find_treasure.png",
+    emoji: "🏴‍☠️"
+  },
+  {
+    statement: "cut with scissors",
+    words: ["cut", "with", "scissors"],
+    distractors: ["glue", "tear", "paper"],
+    image: "assets/cut_scissors.png",
+    emoji: "✂️"
+  },
+  {
+    statement: "glue the paper",
+    words: ["glue", "the", "paper"],
+    distractors: ["cut", "paint", "scissors"],
+    image: "assets/glue_paper.png",
+    emoji: "📄"
+  },
+  {
+    statement: "wave goodbye",
+    words: ["wave", "goodbye"],
+    distractors: ["clap", "shout", "hello"],
+    image: "assets/wave_goodbye.png",
+    emoji: "👋"
+  },
+  {
+    statement: "smile happy smile",
+    words: ["smile", "happy", "smile"],
+    distractors: ["cry", "frown", "sad"],
+    image: "assets/smile_happy.png",
+    emoji: "😊"
+  },
+  {
+    statement: "point at star",
+    words: ["point", "at", "star"],
+    distractors: ["look", "see", "sky"],
+    image: "assets/point_star.png",
+    emoji: "⭐"
+  },
+  {
+    statement: "shout with joy",
+    words: ["shout", "with", "joy"],
+    distractors: ["whisper", "cry", "happy"],
+    image: "assets/shout_joy.png",
+    emoji: "📣"
+  },
+  {
+    statement: "whisper a secret",
+    words: ["whisper", "a", "secret"],
+    distractors: ["shout", "hear", "word"],
+    image: "assets/whisper_secret.png",
+    emoji: "🤫"
+  },
+  {
+    statement: "stack the blocks",
+    words: ["stack", "the", "blocks"],
+    distractors: ["build", "throw", "tower"],
+    image: "assets/stack_blocks.png",
+    emoji: "🧱"
+  },
+  {
+    statement: "build a castle",
+    words: ["build", "a", "castle"],
+    distractors: ["destroy", "make", "sand"],
+    image: "assets/build_castle.png",
+    emoji: "🏰"
+  },
+  {
+    statement: "skate on ice",
+    words: ["skate", "on", "ice"],
+    distractors: ["ski", "run", "snow"],
+    image: "assets/skate_ice.png",
+    emoji: "⛸️"
+  },
+  {
+    statement: "stir the soup",
+    words: ["stir", "the", "soup"],
+    distractors: ["pour", "eat", "pot"],
+    image: "assets/stir_soup.png",
+    emoji: "🍲"
+  },
+  {
+    statement: "pour the juice",
+    words: ["pour", "the", "juice"],
+    distractors: ["drink", "spill", "cup"],
+    image: "assets/pour_juice.png",
+    emoji: "🧃"
+  },
+  {
+    statement: "peel a banana",
+    words: ["peel", "a", "banana"],
+    distractors: ["eat", "cut", "fruit"],
+    image: "assets/peel_banana.png",
+    emoji: "🍌"
   }
 ];
 
